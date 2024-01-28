@@ -1,0 +1,19 @@
+{
+  "name": "inote_back",
+  "version": "1.0.0",
+  "description": "This Backend of iNoteBook",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-validator": "^7.0.1",
+    "mongoose": "^8.1.1",
+    "nodemon": "^3.0.3"
+  }
+}
