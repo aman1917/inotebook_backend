@@ -12,7 +12,7 @@ mongoose
   .then(() => {
     console.log("mongoose connected");
     app.listen(3001, () => {
-      console.log(`Port is runnning on http://localhost:${port}`);
+      console.log(`INotebook is runnning on http://localhost:${port}`);
     });
   })
   .catch(() => {
