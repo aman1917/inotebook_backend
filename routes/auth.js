@@ -17,10 +17,11 @@ router.post(
     body("password", "Enter Atleast 5 Characters").isLength({ min: 5 }),
   ],
   async (req, res) => {
+    let success = false;
     //If error occurs,return the error
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+      return res.status(400).json({ success, errors: result.array() });
     }
     //check weather the user with this email already exists
     try {
@@ -28,7 +29,7 @@ router.post(
       if (user) {
         return res
           .status(400)
-          .json({ errors: "Sorry this email already exists" });
+          .json({ success, errors: "Sorry this email already exists" });
       }
       const salt = await bcrypt.genSalt(10);
       const secPass = await bcrypt.hash(req.body.password, salt);
@@ -44,11 +45,11 @@ router.post(
           id: user.id,
         },
       };
-
       const authtoken = jwt.sign(data, JWT_SCRETE);
+      success = true;
       console.log(authtoken);
       // res.json({ meassage: "User Created" });
-      res.json({ authtoken });
+      res.json({ success, authtoken });
     } catch (error) {
       console.log(error.meassage);
       res.status(500).json("Some Error Occurs");
@@ -64,25 +65,28 @@ router.post(
     body("password", "Password cannot be blank").exists(),
   ],
   async (req, res) => {
+    let success = false;
     //If error occurs,return the error
     const result = validationResult(req);
     if (!result.isEmpty()) {
-      return res.status(400).json({ errors: result.array() });
+      console.log("Email is Empty");
+      return res.status(400).json({ success, errors: result.array() });
     }
     const { email, password } = req.body;
     try {
       const user = await User.findOne({ email });
+      //if user not exists
       if (!user) {
         return res
           .status(400)
-          .json({ error: "Please Login with Correct Cerdentials" });
+          .json({ success, error: "Please Login with Correct Cerdentials" });
       }
-
+      //if password & confirm password not same
       const passwordCompare = await bcrypt.compare(password, user.password);
       if (!passwordCompare) {
         return res
           .status(400)
-          .json({ error: "Please Login with Correct Cerdentials" });
+          .json({ success, error: "Please Login with Correct Cerdentials" });
       }
 
       const data = {
@@ -91,10 +95,11 @@ router.post(
         },
       };
       const authtoken = jwt.sign(data, JWT_SCRETE);
-      res.json({ authtoken });
+      success = true;
+      res.json({ success, authtoken });
     } catch (error) {
       console.log(error.meassage);
-      res.status(500).json("Internal Server Error");
+      res.status(500).json(success, "Internal Server Error");
     }
   }
 );

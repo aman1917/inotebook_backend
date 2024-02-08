@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 const express = require("express");
-
-const app = express();
 const port = 3001;
-
+var cors = require('cors')
+const app = express();
+ 
+app.use(cors())
 app.use(express.json());
 
 //For connection Purpose
@@ -18,6 +19,7 @@ mongoose
   .catch(() => {
     console.log("Failed");
   });
+  
 
 //Get data from server
 app.get("/", (req, res) => {
